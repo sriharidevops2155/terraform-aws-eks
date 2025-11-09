@@ -51,6 +51,51 @@ pipeline {   //Here pipeline is the root element
                 }
             }
         }
+        stage('Bastion EKS ACM ALB') {
+            parallel {
+            stage('Trigger Bastion') {
+                steps {
+                    script {
+                        build job: "20-bastion",
+                        propagate: false, // even SG fails VPC will not be effected.
+                        wait: false // VPC will not wait for SG pipeline completion.
+                        }
+                    }
+                }
+            }
+            stage('Trigger EKS') {
+                steps {
+                    script {
+                        build job: "80-eks",
+                        propagate: false, // even SG fails VPC will not be effected.
+                        wait: false // VPC will not wait for SG pipeline completion.
+                        }
+                    }
+                }
+            stage('ACM ALB') {
+                // Sequential 
+                stages {
+                    stage('Trigger ACM') {
+                        steps {
+                            script {
+                                build job: "60-acm",
+                                propagate: false, // even SG fails VPC will not be effected.
+                                wait: false // VPC will not wait for SG pipeline completion.
+                                }
+                            }
+                        }
+                    stage('Trigger ALB') {
+                        steps {
+                            script {
+                                build job: "70-frontend-alb",
+                                propagate: false, // even SG fails VPC will not be effected.
+                                wait: false // VPC will not wait for SG pipeline completion.
+                                }
+                            }
+                        }  
+                }
+                }
+        }
     }
     post { 
         always { 
