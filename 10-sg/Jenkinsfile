@@ -73,13 +73,11 @@ pipeline {   //Here pipeline is the root element
                 }
             stage('ACM ALB') {
                 // Sequential 
-                stages {
                     steps {
                         script {
                             build job: "60-acm",
                             propagate: false, // even SG fails VPC will not be effected.
                             wait: false // VPC will not wait for SG pipeline completion.
-                            }
                         }
                     }
                 }
