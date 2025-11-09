@@ -20,7 +20,7 @@ pipeline {   //Here pipeline is the root element
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
-                            cd 00-vpc
+                            cd 80-eks
                             terraform init -reconfigure
                         """
                     }
@@ -32,7 +32,7 @@ pipeline {   //Here pipeline is the root element
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
-                            cd 00-vpc
+                            cd 80-eks
                             terraform plan
                         """
                     }
@@ -40,32 +40,17 @@ pipeline {   //Here pipeline is the root element
             }
         }
         stage('Apply') {
-            input {
-            message "Should we continue?"
-            ok "Yes, we should."
-            submitter "alice,bob"
-            }
             steps {
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
-                            cd 00-vpc
+                            cd 80-eks
                             terraform apply -auto-approve
                         """
                     }
                 }
             }
         }
-        // Down stream Job
-        stage('Trigger SG') {
-            steps {
-                script {
-                    build job: "10-sg",
-                    propagate: false, // even SG fails VPC will not be effected.
-                    wait: false // VPC will not wait for SG pipeline completion.
-                    }
-                }
-            }
         }
     }
     post { 
