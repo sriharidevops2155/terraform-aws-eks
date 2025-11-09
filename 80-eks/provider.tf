@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source = "hashicorp/aws"
-      version = "6.15.0"
+      version = "6.0.0"
     }
   }
    backend "s3" {  #Dont save the state file in local and save the state file in below S3 bucket 
