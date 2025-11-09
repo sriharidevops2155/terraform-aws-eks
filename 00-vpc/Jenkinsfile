@@ -11,6 +11,7 @@ pipeline {   //Here pipeline is the root element
     }
     options{
         timeout(time: 30, unit: 'MINUTES')
+        disableConCurrentBuilds()
         ansiColor('xterm')
        // disableConCurrentBuilds()
     }
