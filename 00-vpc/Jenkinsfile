@@ -79,5 +79,4 @@ pipeline {   //Here pipeline is the root element
         failure { 
             echo 'I will say Hello Failure'
         }
-
     }
