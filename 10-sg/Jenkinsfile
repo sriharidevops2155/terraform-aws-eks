@@ -62,7 +62,6 @@ pipeline {   //Here pipeline is the root element
                         }
                     }
                 }
-            }
             stage('Trigger EKS') {
                 steps {
                     script {
@@ -97,6 +96,7 @@ pipeline {   //Here pipeline is the root element
                 }
         }
     }
+}
     post { 
         always { 
             echo 'I will always say Hello again!'
