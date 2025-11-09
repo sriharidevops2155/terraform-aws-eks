@@ -1,0 +1,69 @@
+pipeline {   //Here pipeline is the root element
+    agent {
+        label 'AGENT-1'
+    }
+    environment{
+        appVersion = ''
+        REGION = "us-east-1" 
+        ACC_ID = "583023875867"
+        PROJECT = "roboshop"
+        COMPONENT = "catalogue"
+    }
+    options{
+        timeout(time: 30, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        ansiColor('xterm')
+    }
+    stages {
+        stage('initi') {
+            steps {
+                script {
+                    withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                        sh """
+                            cd 10-sg
+                            terraform init -reconfigure
+                        """
+                    }
+                }
+            }
+        }
+        stage('Plan') {
+            steps {
+                script {
+                    withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                        sh """
+                            cd 10-sg
+                            terraform plan
+                        """
+                    }
+                }
+            }
+        }
+        stage('Apply') {
+            steps {
+                script {
+                    withAWS(credentials: 'aws-creds', region: 'us-east-1') {
+                        sh """
+                            cd 10-sg
+                            terraform apply -auto-approve
+                        """
+                    }
+                }
+            }
+        }
+        }
+    }
+    post { 
+        always { 
+            echo 'I will always say Hello again!'
+            deleteDir()
+        }
+        success { 
+            echo 'I will say Hello success'
+        }
+        failure { 
+            echo 'I will say Hello Failure'
+        }
+
+    }
+}
