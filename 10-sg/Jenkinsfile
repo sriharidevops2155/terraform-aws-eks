@@ -15,7 +15,7 @@ pipeline {   //Here pipeline is the root element
         ansiColor('xterm')
     }
     stages {
-        stage('initi') {
+        stage('init') {
             steps {
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
@@ -52,7 +52,6 @@ pipeline {   //Here pipeline is the root element
             }
         }
     }
-}
     post { 
         always { 
             echo 'I will always say Hello again!'
@@ -64,5 +63,5 @@ pipeline {   //Here pipeline is the root element
         failure { 
             echo 'I will say Hello Failure'
         }
-
     }
+}
