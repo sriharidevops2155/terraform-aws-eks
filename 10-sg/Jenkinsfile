@@ -51,8 +51,8 @@ pipeline {   //Here pipeline is the root element
                 }
             }
         }
-        }
     }
+}
     post { 
         always { 
             echo 'I will always say Hello again!'
@@ -66,4 +66,3 @@ pipeline {   //Here pipeline is the root element
         }
 
     }
-}

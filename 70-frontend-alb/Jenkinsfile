@@ -20,7 +20,7 @@ pipeline {   //Here pipeline is the root element
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
-                            cd 60-acm
+                            cd 70-frontend-alb
                             terraform init -reconfigure
                         """
                     }
@@ -32,7 +32,7 @@ pipeline {   //Here pipeline is the root element
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
-                            cd 60-acm
+                            cd 70-frontend-alb
                             terraform plan
                         """
                     }
@@ -44,7 +44,7 @@ pipeline {   //Here pipeline is the root element
                 script {
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
-                            cd 60-acm
+                            cd 70-frontend-alb
                             terraform apply -auto-approve
                         """
                     }
@@ -66,4 +66,3 @@ pipeline {   //Here pipeline is the root element
         }
 
     }
-}
