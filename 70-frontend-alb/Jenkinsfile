@@ -45,7 +45,7 @@ pipeline {   //Here pipeline is the root element
                     withAWS(credentials: 'aws-creds', region: 'us-east-1') {
                         sh """
                             cd 70-frontend-alb
-                            terraform destroy -auto-approve
+                            terraform apply -auto-approve
                         """
                     }
                 }
