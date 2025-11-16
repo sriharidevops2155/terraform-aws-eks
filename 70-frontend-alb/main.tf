@@ -46,3 +46,37 @@ resource "aws_route53_record" "ingress_alb" {
     evaluate_target_health = true
   }
 }
+
+resource "aws_lb_target_group" "frontend" {
+  name     = "${var.project}-${var.environment}-frontend"  #roboshop-dev-frontend
+  port     = 8080
+  protocol = "HTTP"
+  vpc_id   = local.vpc_id
+  deregistration_delay = 120
+  target_type = "ip"
+  health_check {
+    healthy_threshold = 2
+    interval = 5
+    matcher = "200-299"
+    path = "/"
+    port = 8080
+    timeout = 2
+    unhealthy_threshold = 5
+  }
+}
+
+resource "aws_lb_listener_rule" "frontend" {
+  listener_arn = aws_lb_listener.ingress_alb.arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.frontend.arn
+  }
+
+  condition {
+    host_header {
+      values = ["${var.environment}.${var.zone_name}"] # https://dev.daws84s.cloud
+    }
+  }
+}
