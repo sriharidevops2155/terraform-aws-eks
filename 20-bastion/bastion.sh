@@ -11,21 +11,12 @@ lvextend -L +10G /dev/RootVG/homeVol
 xfs_growfs /
 xfs_growfs /home
 
-#!/bin/bash
-
 dnf -y install dnf-plugins-core
 dnf config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
 dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 systemctl start docker
 systemctl enable docker
 usermod -aG docker ec2-user
-
-growpart /dev/nvme0n1 4
-lvextend -L +20G /dev/RootVG/rootVol
-lvextend -L +10G /dev/RootVG/varVol
-
-xfs_growfs /
-xfs_growfs /var
 
 ARCH=amd64
 PLATFORM=$(uname -s)_$ARCH
@@ -56,3 +47,14 @@ chmod 700 get_helm.sh
 #cd k8s && eksctl create cluster --config-file=eks.yml
 
 # eksctl delete cluster --config-file=eks.yml
+
+
+
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
+
+curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64
+sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+rm argocd-linux-amd64
